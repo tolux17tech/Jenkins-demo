@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment{
-        ANSIBLE_SERVER= "34.229.178.231"
+        ANSIBLE_SERVER="34.229.178.231"
     }
     stages {
         stage("copy files to Jenkins server") {
