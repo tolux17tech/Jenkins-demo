@@ -19,7 +19,7 @@ pipeline {
                 }
             }
         }
-        stage("Eexcute ansible playbook"){
+        stage("Execute ansible playbook"){
             steps{
                 script{
                     echo "Calling ansible playbook to configure EC2 instance"
