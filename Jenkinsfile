@@ -12,7 +12,7 @@ pipeline {
                     sshagent(['ansible-server-key']) {
                         sh 'scp -o StrictHostKeyChecking=no ${JENKINS_PATH} ubuntu@${ANSIBLE_SERVER}:/home/ubuntu'
                         withCredentials([sshUserPrivateKey(credentialsId: 'ansible-server-key', keyFileVariable: 'keyfile', usernameVariable: 'user')]) {
-                        sh 'scp -i  $keyfile ubuntu@${ANSIBLE_SERVER}:/home/ubuntu/ssh-key.pem'
+                        sh 'scp  $keyfile ubuntu@${ANSIBLE_SERVER}:/home/ubuntu/ssh-key.pem'
                         }
 
                     }
