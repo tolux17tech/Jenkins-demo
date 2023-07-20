@@ -31,6 +31,7 @@ pipeline {
                     withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu-new', keyFileVariable: 'keyfile', usernameVariable: 'ansible')]) {
                        remote.user = ansible
                        remote.identityFile = keyfile 
+                       sshScript remote: remote, script: "prepare-ansible.sh"
                        sshCommand remote: remote, command: "ansible-playbook demo-playbook.yaml"
                     }                    
                 }
