@@ -12,10 +12,26 @@ pipeline {
                     sshagent(['ansible-server-key']) {
                         sh 'scp -o StrictHostKeyChecking=no ${JENKINS_PATH} ubuntu@${ANSIBLE_SERVER}:/home/ubuntu'
                         withCredentials([sshUserPrivateKey(credentialsId: 'ansible-server-key', keyFileVariable: 'keyfile', usernameVariable: 'user')]) {
-                        sh "scp -i $keyfile $keyfile ubuntu@${ANSIBLE_SERVER}:/home/ubuntu/ssh-key.pem"
+                        sh "scp -i  $keyfile ubuntu@${ANSIBLE_SERVER}:/home/ubuntu/ssh-key.pem"
                         }
 
                     }
+                }
+            }
+        }
+        stage("Eexcute ansible playbook"){
+            steps{
+                script{
+                    echo "Calling ansible playbook to configure EC2 instance"
+
+                    def remote = [:]
+                    remote.name = 'ansible-server'
+                    remote.host = ANSIBLE_SERVER
+                    remote.allowAnyHosts: true
+                    withCredentials([sshUserPrivateKey(credentialsId: 'ansible-server-key', keyFileVariable: 'keyfile', usernameVariable: 'user')]) {
+                        sshCommand remote: remote, command: "ls -l"
+                        }
+  
                 }
             }
         }
