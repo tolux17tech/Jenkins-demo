@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment{
         ANSIBLE_SERVER="34.229.178.231"
-        JENKINS_PATH="/Users/dc/TEST_FOLDER/shell_scripts/jenkins/*"
+        JENKINS_PATH="*"
     }
     stages {
         stage("copy files to Jenkins server") {
