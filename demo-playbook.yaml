@@ -1,6 +1,6 @@
 ---
 - name: Configure nginx web server
-  hosts: aws_ubuntu 
+  hosts: all 
   become: True
   tasks: 
   - name: install nginx on server
@@ -13,7 +13,7 @@
       state: started
 
 - name: Configure httpd server
-  hosts: aws_amazon
+  hosts: all
   become: True
   tasks:
   - name: Install Apache2 package
