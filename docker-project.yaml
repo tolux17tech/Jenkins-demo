@@ -1,0 +1,96 @@
+---
+# - name: wait for ssh connections
+#   hosts: all
+#   tasks:
+#     - name: Ensure SSH port is open
+#       wait_for:
+#         port: 22
+#         delay: 10
+#         timeout: 100
+#         search_regex: OpenSSH
+#         host: '{{ (ansible_ssh_host |default(ansible_host))|default(inventory_hostname)}}'
+#       vars:
+#         ansible_connection: local
+#         ansible_python_interpreter: /usr/bin/python3
+
+- name: Install python3, docker, docker-compose and start docker daemon
+  hosts: all
+  become: True
+  tasks:
+  - name: install Python3.x
+    vars:
+      ansible_python_interpreter: /usr/bin/python3
+    yum:
+      name: python3, docker
+      update_cache: yes
+      state: present 
+
+  - name: Install docker-compose
+    get_url:
+      url: "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-Linux-x86_64"
+      dest: /usr/local/bin/docker-compose
+      mode: +x
+  - name: Start docker daemon
+    service:
+      name: docker
+      state: started
+  - name: Install and upgrade ip
+    pip:
+      name: pip
+      extra_args: --upgrade
+      executable: pip3
+  - name: Install Docker's python module
+    # vars:
+    #   ansible_python_interpreter: /usr/bin/python3
+    pip:
+      name: 
+      - docker
+      - docker-compose
+      - urllib3==1.26.6
+  - name: Uninstall docker py
+    pip: 
+      name:
+      - docker-py
+      state: absent
+
+
+- name: Add ec2-user to docker group
+  hosts: all
+  become: True
+  tasks:
+  - name: add ec2-user to docker  group
+    user:
+      name: ec2-user
+      group: docker 
+      append: yes
+  - name: Reconnect to server
+    meta: reset_connection
+# - name: Test docker pull
+#   hosts: all
+#   tasks:
+#   - name: pull redis image
+#     vars:
+#       ansible_python_interpreter: /usr/bin/python
+#     docker_image:
+#       name: redis
+#       source: pull
+- name: Start docker container
+  hosts: all
+  tasks:
+    - name: Copy docker compose file
+      copy:
+        src: /Users/dc/TEST_FOLDER/shell_scripts/ansible/docker-compose.yml
+        dest: /home/ec2-user/
+- name: Start container with docker compose
+  hosts: all
+  tasks:
+  - name: start containers using docker-compose up command
+    vars:
+      ansible_python_interpreter: /usr/bin/python3
+    docker_compose:
+      project_src: /home/ec2-user/
+      state: present 
+    register: output
+
+
+ 

@@ -1,0 +1,26 @@
+---
+- name: Configure nginx web server
+  hosts: aws_ubuntu 
+  become: True
+  tasks: 
+  - name: install nginx on server
+    apt:
+      name: nginx
+      state: latest 
+  - name: start the server
+    service:
+      name: nginx
+      state: started
+
+- name: Configure httpd server
+  hosts: aws_amazon
+  become: True
+  tasks:
+  - name: Install Apache2 package
+    yum:
+      name: httpd
+      state: latest
+  - name: Start server
+    service:
+      name: httpd
+      state: started
